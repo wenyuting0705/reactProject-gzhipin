@@ -2,6 +2,7 @@ import React,{Component} from 'react'
 import {NavBar,WingBlank,WhiteSpace,InputItem,Radio,Button,List} from 'antd-mobile'
 
 import Logo from '../../components/logo/logo'
+import {reqRegister} from '../../api'
 
 export default class Register extends Component{
   state={
@@ -19,7 +20,9 @@ export default class Register extends Component{
     })
   }
   toRegister = ()=>{
-    console.log(this.state)
+    reqRegister(this.state).then(response => {
+      console.log(response.data)
+    })
   }
   render(){
     return (
