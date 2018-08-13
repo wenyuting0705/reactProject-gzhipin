@@ -1,10 +1,12 @@
 import React,{Component} from 'react'
 import {NavBar,WingBlank,WhiteSpace,InputItem,Radio,Button,List} from 'antd-mobile'
-
+import {connect} from 'react-redux'
+import {Redirect} from 'react-router-dom'
+import {register} from '../../redux/actions'
 import Logo from '../../components/logo/logo'
-import {reqRegister} from '../../api'
 
-export default class Register extends Component{
+
+class Register extends Component{
   state={
     username:'',
     password:'',
@@ -20,17 +22,21 @@ export default class Register extends Component{
     })
   }
   toRegister = ()=>{
-    reqRegister(this.state).then(response => {
-      console.log(response.data)
-    })
+    this.props.register(this.state)
   }
   render(){
+    const {msg,redirectTo}=this.props.user;
+    // console.log(this.props.user)
+    if(redirectTo){
+      return <Redirect to={redirectTo}/>
+    }
     return (
       <div>
         <NavBar>用户注册</NavBar>
         <Logo/>
         <WingBlank>
           <List>
+            <p>{msg}</p>
             <InputItem type='text' placeholder='请输入用户名'
                        onChange={(val)=>this.handleChange('username',val)}>用户名：</InputItem>
             <WhiteSpace/>
@@ -55,3 +61,8 @@ export default class Register extends Component{
     )
   }
 }
+
+export default connect(
+  state=>({user:state.user}),
+ {register}
+)(Register)

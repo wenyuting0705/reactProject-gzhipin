@@ -4,11 +4,9 @@
   "private": true,
   "dependencies": {
     "antd-mobile": "^2.2.3",
-    "axios": "^0.18.0",
     "blueimp-md5": "^2.10.0",
     "cors": "^2.8.4",
     "js-cookie": "^2.2.0",
-    "mongoose": "^5.2.7",
     "rc-queue-anim": "^1.6.5",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
