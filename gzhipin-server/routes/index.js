@@ -33,4 +33,24 @@ router.post('/login',(req,res)=>{
     }
   })
 })
+router.post('/update',(req,res)=>{
+  const userid=req.cookies.userid;
+  if(!userid){
+    res.send({code:1,msg:'请先登录！'})
+  }
+  UserModel.findByIdAndUpdate({_id:userid},req.body,(err,user)=>{
+    const {_id,username,type} = user;
+    const data = Object.assign(req.body,{_id,username,type});
+    res.send({code:0,data})
+  })
+})
+router.get('/user',(req,res)=>{
+  const userid=req.cookies.userid;
+  if(!userid){
+    res.send({code:1,msg:'请先登录！'})
+  }
+  UserModel.findOne({_id:userid},filter,(err,user)=>{
+    return  res.send({code:0,user})
+  })
+})
 module.exports = router;
