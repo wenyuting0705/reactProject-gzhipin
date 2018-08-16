@@ -1,17 +1,20 @@
 import {reqRegister,
         reqLogin,
         reqUpdateUser,
-        reqUser} from '../api'
-
+        reqUser,
+        reqUserList} from '../api'
+import io from 'socket.io-client'
 import {AUTH_SUCCESS,
          ERROR_MSG,
          RECEIVE_USER,
-         RESET_USER} from './action-types'
+         RESET_USER,
+         RECEIVE_USER_LIST} from './action-types'
 
 const authSuccess = (user) => ({type:AUTH_SUCCESS,data:user});
 const errorMsg = (msg) => ({type:ERROR_MSG,data:msg});
 const receiveUser = (user) => ({type:RECEIVE_USER,data:user});
-const resetUser = (msg)=>({type:RESET_USER,data:msg});
+export const resetUser = (msg)=>({type:RESET_USER,data:msg});
+const receiveUserList = (userList)=>({type:RECEIVE_USER_LIST,data:userList})
 
 export function register({username,password,rePassword,type}) {
   if(!username){
@@ -69,9 +72,29 @@ export function getUser() {
     const response = await reqUser()
     const result = response.data;
     if(result.code===0){
-      dispatch(receiveUser(result.user))
+      dispatch(receiveUser(result.data))
     }else {
       dispatch(resetUser(result.msg))
     }
+  }
+}
+export function getUserList(type) {
+  return async dispatch=>{
+    const response = await reqUserList(type)
+    const result = response.data;
+    if(result.code===0){
+      dispatch(receiveUserList(result.data))
+    }
+  }
+}
+
+const socket = io('ws://localhost:5000')
+socket.on('receiveMsg',(chatMsg)=>{
+  console.log('浏览器接收到服务发送的消息', chatMsg)
+})
+export function sendMsg({content,from,to}) {
+  return dispatch =>{
+    socket.emit('sendMsg',{content,from,to})
+    console.log('浏览器向服务器发消息', {content, from, to})
   }
 }

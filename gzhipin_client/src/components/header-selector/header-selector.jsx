@@ -14,7 +14,7 @@ export default class HeaderSelector extends Component{
     this.headerList=[]
     for (let i = 0; i < 20; i++) {
       const text=`头像${i+1}`
-      const icon=require(`./imgs/${text}.png`)
+      const icon=require(`../../assets/imgs/${text}.png`)
       this.headerList.push({icon,text})
     }
   }

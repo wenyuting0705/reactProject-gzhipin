@@ -4,14 +4,17 @@ import Cookies from 'js-cookie'
 import {connect} from 'react-redux'
 import {NavBar} from 'antd-mobile'
 
-import {getUser} from '../../redux/actions'
-import DashenInfo from '../dashen-info/dashen-info'
 import LaobanInfo from '../laoban-info/laoban-info'
-import Dashen from '../dashen/dashen'
+import DashenInfo from '../dashen-info/dashen-info'
 import Laoban from '../laoban/laoban'
+import Dashen from '../dashen/dashen'
 import Message from '../message/message'
 import Personal from '../personal/personal'
+import Chat from '../chat/chat'
+import NavFooter from '../../components/nav-footer/nav-footer'
+import NotFound from '../../components/not-found/not-found'
 
+import {getUser} from '../../redux/actions'
 import {getRedirectPath} from "../../utils";
 
 class Main extends Component{
@@ -64,24 +67,38 @@ class Main extends Component{
     }
     const path = this.props.location.pathname;
     if(path==='/'){
-        const path=getRedirectPath(user.type,user.header)
-        return <Redirect to={path}/>
+        return <Redirect to={getRedirectPath(user.type,user.header)}/>
     }
-
+    if(user.type==='laoban'){
+      if(path==='/dashen'){
+        return <Redirect to='/laoban'/>
+      }
+      this.navList[1].hide=true
+    }else {
+      if(path==='/laoban'){
+        return <Redirect to='/dashen'/>
+      }
+      this.navList[0].hide=true
+    }
     const currentNav = this.navList.find((nav,index)=>nav.path===path)
     return (
-     <div>
-       {currentNav ? <NavBar>{currentNav.title}</NavBar> : null}
-       <Switch>
-         <Route path='/dasheninfo' component={DashenInfo}/>
-         <Route path='/laobaninfo' component={LaobanInfo}/>
+      <div>
+        {currentNav ? <NavBar className='fix-top'>{currentNav.title}</NavBar> : null}
 
-         <Route path='/dashen' component={Dashen}/>
-         <Route path='/laoban' component={Laoban}/>
-         <Route path='/message' component={Message}/>
-         <Route path='/personal' component={Personal}/>
-       </Switch>
-     </div>
+        <Switch>
+          <Route path='/laobaninfo' component={LaobanInfo}/>
+          <Route path='/dasheninfo' component={DashenInfo}/>
+
+          <Route path='/laoban' component={Laoban}/>
+          <Route path='/dashen' component={Dashen}/>
+          <Route path='/message' component={Message}/>
+          <Route path='/personal' component={Personal}/>
+          <Route path='/chat/:userid' component={Chat}/>
+
+          <Route component={NotFound}/>
+        </Switch>
+        {currentNav ? <NavFooter navList={this.navList}/> : null}
+      </div>
     )
   }
 }
